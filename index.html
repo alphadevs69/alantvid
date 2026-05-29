@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>alantv@project</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+<script src="script.js" defer></script>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Welcome <span>alantv@project</span></h1>
+<p>Enjoy The World Comrade</p>
+
+<a id="appBtn" class="btn" href="https://alantvid.pages.dev/app.apk">
+Get App
+</a>
+
+<button class="btn" onclick="toggleMenu()">
+Copy playlist
+</button>
+
+<div class="copy-menu" id="copyMenu">
+
+<button onclick="copyLink('https://alantvid.pages.dev/pltv.m3u')">
+Pltv
+</button>
+
+<button onclick="copyLink('https://alantvid.pages.dev/sport.m3u')">
+plsport
+</button>
+
+<button onclick="copyLink('https://alantvid.pages.dev/movie.m3u')">
+plmovie
+</button>
+
+<button onclick="copyLink('https://alantvid.pages.dev/txx.m3u')">
+plxxx
+</button>
+
+</div>
+
+<button class="btn" onclick="showImage()">
+Nyawits
+</button>
+
+<div class="image-box" id="sawitImage">
+<img src="nyawits.png" alt="Tandan Sawit">
+</div>
+
+</div>
+
+<div id="musicPlayer">
+<div id="disc">♫</div>
+<button id="musicBtn" onclick="toggleMusic()">⏸</button>
+</div>
+
+<audio id="bgMusic" autoplay loop playsinline>
+<source src="https://tjemmajfbnrcbxasemdm.supabase.co/storage/v1/object/public/app_project/nyawitsoungs.mp3" type="audio/mpeg">
+</audio>
+
+<div class="toast" id="toast">
+congrats Comrades!
+</div>
+
+
+<script>
+/* Tombol Get App:
+   - Android: coba buka OTT Navigator jika sudah terinstal.
+   - Jika belum terinstal / gagal dibuka: otomatis fallback download APK.
+   - Fitur lain tetap memakai script.js seperti sebelumnya.
+*/
+(function () {
+  const APK_URL = "https://alantvid.pages.dev/app.apk";
+  const PACKAGE_NAME = "studio.scillarium.ottnavigator";
+
+  function isAndroid() {
+    return /Android/i.test(navigator.userAgent);
+  }
+
+  function openOrDownload(e) {
+    e.preventDefault();
+
+    // Desktop / non-Android langsung download APK
+    if (!isAndroid()) {
+      window.location.href = APK_URL;
+      return;
+    }
+
+    let opened = false;
+
+    const fallbackTimer = setTimeout(function () {
+      if (!opened && !document.hidden) {
+        window.location.href = APK_URL;
+      }
+    }, 1400);
+
+    function markOpened() {
+      opened = true;
+      clearTimeout(fallbackTimer);
+      window.removeEventListener("pagehide", markOpened);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    }
+
+    function onVisibilityChange() {
+      if (document.hidden) markOpened();
+    }
+
+    window.addEventListener("pagehide", markOpened);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    // Cara paling aman dari browser Android: buka package via intent.
+    // Jika aplikasi belum ada, browser akan tetap di halaman lalu fallback download APK.
+    window.location.href =
+      "intent://launch/#Intent;scheme=ottnavigator;package=" +
+      PACKAGE_NAME +
+      ";end";
+  }
+
+  window.addEventListener("DOMContentLoaded", function () {
+    const appBtn = document.getElementById("appBtn");
+    if (!appBtn) return;
+
+    appBtn.href = APK_URL;
+    appBtn.addEventListener("click", openOrDownload);
+  });
+})();
+</script>
+
+</body>
+</html>
